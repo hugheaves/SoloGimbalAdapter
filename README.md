@@ -12,4 +12,4 @@ Use "adapter.scad" and "bracket.scad" to actually print the adapter and the brac
 The latest version of this model is available at
 https://github.com/hugheaves/SoloGimbalAdapter
 
-![Picture of Gimbal Adapter](https://github.com/hugheaves/SoloGimbalAdapter/raw/master/adapter/adapter.png)
+![Picture of Gimbal Adapter](https://github.com/hugheaves/SoloGimbalAdapter/raw/master/adapter.png)
