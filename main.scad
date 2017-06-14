@@ -278,6 +278,11 @@ module bracket() {
   }
 }
 
+// Render the objects for preview
+translate([-20,0,0])
+  bracket();
+
+adapter();
  
 
 
