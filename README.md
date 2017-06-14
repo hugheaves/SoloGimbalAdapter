@@ -1,3 +1,4 @@
+
 This is an adapter that allows you to use any action camera roughly the same size as a GoPro with the 3DR Solo gimbal.
 
 The design incorporates 45 degree angles in the overhangs so that it will print well without supports.
@@ -10,3 +11,5 @@ Use "adapter.scad" and "bracket.scad" to actually print the adapter and the brac
 
 The latest version of this model is available at
 https://github.com/hugheaves/SoloGimbalAdapter
+
+![Picture of Gimbal Adapter](https://github.com/hugheaves/SoloGimbalAdapter/raw/master/adapter/thermostat.ping)
