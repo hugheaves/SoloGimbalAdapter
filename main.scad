@@ -16,35 +16,60 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-/***************************************************
- * NOTE: this file contains the code and paramters
- * for the camera adapter and bracket, but does not
- * render them. Open "adapter.scad" or "bracket.scad"
- * to actually render the adapter and bracket models.
- ***************************************************
+/************************************************
+ * PART SELECTION
+ ************************************************/
  
-/*********************
- * CAMERA DIMENSIONS *
- *********************/
+// Select the part you would like to display
+part = "adapter"; // [adapter:Adapter,retaining_clip:Retaining clip,back_weight:Back Weight,side_weight:Side Weight]
+
+
+/********************
+ * MAIN PARAMETERS *
+ ********************/
 
 // No-name SJ4000 clone
 // camera_length = 59.8;
 // camera_width = 40.8;
 // camera_height = 25.6;
 
-// GitUp Git2P
-camera_length = 59.4;
-camera_width = 41.1;
-camera_height = 19.6;
+// The values below are for the GitUp Git2P
+
+/* [Adapter Parameters] */
+// Length of camera body (side to side)
+camera_length = 59.4; // [57:62]
+// Width of camera body (top to bottom)
+camera_width = 41.1;  // [38:42]
+// Height of camera body (front to back)
+camera_height = 19.6;  // [15:40]
+
+// Retaining clip size (length of clip "overhang")
+retaining_clip_depth = 2.5; // [1:5]
+
+/* [Back Weight Parameters] */
+// The length of the counterbalance weight on the back of the camera. Larger values make it heavier.
+back_weight_length = 29; // [10:40]
+
+// The offset of the weight on the back of the gimbal. Values greater than zero move the weight to the outer side of the gimbal
+back_weight_offset = 0; // [0:20]
+
+/* [Side Weight Parameters] */
+// The thickness of the side weight, thicker is heavier
+side_weight_thickness = 4; // [4:8]
+
+// The length of the side weight, longer is heavier
+side_weight_length = 10; // [9:17]
 
 /********************
- * MAIN PARAMETERS *
+ * OTHER PARAMETERS *
  ********************/
+/* [Hidden] */
+
 /* How much to shift the camera to the right to avoid the curved protrusion from the pitch motor housing */
 camera_offset = 3.2;
 
 /* Dimensions of the base of the camera adapter, so that it is a nice snug fit inside the 3DR gimbal mount */
-base_height = 8; // (thickness) thick enough to clear the GoPro plug in the back
+base_height = 8;  // (thickness) thick enough to clear the GoPro plug in the back
 base_width  = 42;
 base_length = 60;
 
@@ -54,10 +79,10 @@ bracket_depth = 9.5;
 bracket_thickness = 3;
 bracket_radius = 2;
 
-
-/********************
- * OTHER PARAMETERS *
- ********************/
+/* Typical values for M2 cap-head screws */
+screw_thread_diameter = 2.5;
+screw_head_diameter = 5;
+screw_head_height = 3;
 
 /* Dimensions of the "stud" that the 3DR balancing weights attach to */
 stud_height = 2.5;
@@ -89,7 +114,6 @@ motor_protrusion_width = 20;
 
 // thickness / length of camera retaining clips
 clip_thickness = 1.6;
-clip_length = 3;
 right_clip_opening_width =  26;
 // left_clip_opening_width = motor_protrusion_width;
 left_clip_opening_width = right_clip_opening_width;
@@ -155,7 +179,7 @@ module clip(length) {
       prism(camera_width+clip_thickness*2,length*2,length);
  //   cube([camera_width+clip_thickness*2, length + clip_thickness, clip_thickness ]);
   wedge(base_width,camera_offset - clip_thickness,camera_height+ length * 2 + camera_height_adjustment, true, false);
-  translate([0,0,camera_height + clip_length + camera_height_adjustment - length]) {
+  translate([0,0,camera_height + retaining_clip_depth + camera_height_adjustment - length]) {
   translate([-clip_thickness + camera_gap,0,0]) clip_corner(length);
   translate([base_width - camera_gap,0,0]) clip_corner(length);
   }
@@ -164,9 +188,9 @@ module clip(length) {
 module left_clip() {
   translate ([0,camera_offset - clip_thickness,base_height]) {
     difference() {
-      clip(clip_length);
+      clip(retaining_clip_depth);
       translate ([x_midpoint - left_clip_opening_width / 2,-clip_thickness,2])
-        cube([left_clip_opening_width,clip_length + clip_thickness * 2,camera_height+clip_length*2]);
+        cube([left_clip_opening_width,retaining_clip_depth + clip_thickness * 2,camera_height+retaining_clip_depth*2]);
     }
   }
 }
@@ -174,18 +198,13 @@ module left_clip() {
 module right_clip() {
   translate ([0,camera_length + camera_offset + clip_thickness,base_height]) {
     mirror ([0,1,0]) difference() {
-      clip(clip_length);
+      clip(retaining_clip_depth);
       translate ([x_midpoint - right_clip_opening_width / 2,-clip_thickness,2])
-        cube([right_clip_opening_width,clip_length + clip_thickness * 2,camera_height+clip_length*2]);
+        cube([right_clip_opening_width,retaining_clip_depth + clip_thickness * 2,camera_height+retaining_clip_depth*2]);
     }
-
-//    translate([-clip_thickness + camera_gap,0,-clip_thickness ])
-//      wedge(clip_thickness,4,10, true, false);
-//    translate([base_width -  camera_gap,0,-clip_thickness ])
-//      wedge(clip_thickness,4,10, true, false);
   }
 }
-
+     
 module prism(x, y, z, upside_down){
   translate([0,y/2,0]) {
   wedge(x, y/2, z, true, upside_down);
@@ -247,9 +266,9 @@ module adapter() {
 }
 
 /********************************************
- * Top level function to render the bracket
+ * Top level function to render the retaining clip
  ********************************************/
-module bracket() {
+module retaining_clip() {
   bracket_inside_height = 11.4 + base_height - bracket_thickness;
 
   difference() {
@@ -278,13 +297,118 @@ module bracket() {
   }
 }
 
-// Render the objects for preview
-translate([-20,0,0])
-  bracket();
+/********************************************
+ * Top level function to render the back / counterbalance weight
+ ********************************************/
+module back_weight() {
+  thickness = 2;
+  length = 57.8;
+  width = 34;
+  weight_thickness = 100;
+  
+  rotate([90,0,0])
+  intersection() {
+    difference() {
+      union() {
+        cube([length, width, thickness]);
+        translate([back_weight_offset, 0, -weight_thickness])
+          cube([back_weight_length, width, weight_thickness]);
+        translate([12, 0, thickness])
+          cube([3, width, 3.4]);
+        translate([33.6, 0, thickness])
+          cube([3, width, 4]);
+        translate([54.8, 0, thickness])
+          cube([3, width, 4]); 
+        
+       translate([36, 0, 0]) {
+        translate([4.5, 18, -2])
+          cylinder(d = 5, h = 2);
+        translate([16.5, 6.75, -2])
+          cylinder(d = 5, h = 2);
+        translate([13.5, 27, -2])
+          cylinder(d = 5, h = 2);
+       }
 
-adapter();
- 
+      }
+      translate([36, 0, 0]) {
+        translate([4.5, 18, -90])
+          cylinder(d = screw_thread_diameter, h = 100);
+        translate([16.5, 6.75, -90])
+          cylinder(d = screw_thread_diameter, h = 100);
+        translate([13.5, 27, -90])
+          cylinder(d = screw_thread_diameter, h = 100);
+      } 
 
+    }
+    mirror([-1, 0, 1])
+      translate([26, width / 2, 0]) {
+        cylinder(d = 77, h = 14, $fn = 64);
+        translate([0, 0, 14])
+          cylinder(d = 70, h = 16, $fn = 64);
+        translate([0, 0, 30])
+          cylinder(d = 77, h = 100, $fn = 64);
+      }
+  }
+}
 
+module curve_cutout(beam_curve_diameter, beam_thickness) {
+  difference() {
+    cylinder(d = beam_curve_diameter, h = 100, $fn = 64);
+    cylinder(d = beam_curve_diameter - (beam_thickness * 2), h = 100, $fn = 64);
+  }
+}
 
+/********************************************
+ * Top level function to render the side weight
+ ********************************************/
+module side_weight() {
+  
+  side_weight_width = 2;
 
+  beam_curve_diameter = 34;
+  beam_thickness = 1.2;
+  beam_height = 4;
+  beam_width = 5.7;
+  beam_length = beam_curve_diameter / 2;
+
+  bracket_length = beam_length;
+  bracket_width = beam_width + side_weight_width + beam_thickness;
+  bracket_height = beam_height + side_weight_thickness;
+  bracket_depth = 3;
+  
+  difference() {
+    union() {
+      difference() {
+            cube([bracket_length, bracket_width, bracket_height]);
+        
+        translate([0, beam_curve_diameter / 2 + side_weight_width, side_weight_thickness])
+          curve_cutout(beam_curve_diameter, beam_thickness);
+        
+        translate([bracket_length - screw_head_diameter / 2- 1,bracket_width / 2 - 1, 0]){ 
+          
+          cylinder(d = screw_head_diameter, h = screw_head_height, $fn = 16);
+          cylinder(d = screw_thread_diameter, h = bracket_height, $fn = 16);
+        }
+      }
+      translate([-side_weight_length, 0, 0])
+        difference() {
+          cube([side_weight_length, bracket_width, bracket_height]);
+          
+         translate([0, side_weight_width, side_weight_thickness])
+            cube([side_weight_length, beam_thickness, 100]);
+        }
+    }
+  }
+}
+
+// Call the top level rendering function based on "part"
+if (part == "adapter") {
+		adapter();
+} else if (part == "back_weight") {
+		back_weight();
+} else if (part == "retaining_clip") {
+		retaining_clip();
+} else if (part == "side_weight") {
+		side_weight();
+    translate([0,20,0]) mirror([1,0,0]) side_weight();
+}
