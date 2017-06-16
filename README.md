@@ -41,4 +41,4 @@ All of the parts are designed to print without supports. I printed in ABS, but t
 The latest version of this model is available at
 https://github.com/hugheaves/SoloGimbalAdapter
 
-![Picture of Gimbal Adapter](https://github.com/hugheaves/SoloGimbalAdapter/raw/master/adapter/thermostat.ping)
+![Picture of Gimbal Adapter](https://github.com/hugheaves/SoloGimbalAdapter/raw/master/adapter.png)
