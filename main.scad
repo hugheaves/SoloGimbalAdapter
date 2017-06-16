@@ -23,6 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Select the part you would like to display
 part = "adapter"; // [adapter:Adapter,retaining_clip:Retaining clip,back_weight:Back Weight,side_weight:Side Weight]
 
+part = "back_weight";
 
 /********************
  * MAIN PARAMETERS *
@@ -43,8 +44,8 @@ camera_width = 41.1;  // [38:42]
 // Height of camera body (front to back)
 camera_height = 19.6;  // [15:40]
 
-// Retaining clip size (length of clip "overhang")
-retaining_clip_depth = 2.5; // [1:5]
+// Adapter arm bump size (How far out the "bumps" protrude on the ends of the arms)
+adapter_arm_bump_size = 2.5; // [1:5]
 
 /* [Back Weight Parameters] */
 // The length of the counterbalance weight on the back of the camera. Larger values make it heavier.
@@ -124,6 +125,9 @@ camera_gap = (base_width - camera_width) / 2;
 
 camera_height_adjustment = 0;
 
+// more facets for smaller holes
+$fn=16;
+
 module lip_cutout() {
 cube([bottom_lip_width, base_length, bottom_lip_height]);
   translate([0,0,bottom_lip_height])
@@ -179,7 +183,7 @@ module clip(length) {
       prism(camera_width+clip_thickness*2,length*2,length);
  //   cube([camera_width+clip_thickness*2, length + clip_thickness, clip_thickness ]);
   wedge(base_width,camera_offset - clip_thickness,camera_height+ length * 2 + camera_height_adjustment, true, false);
-  translate([0,0,camera_height + retaining_clip_depth + camera_height_adjustment - length]) {
+  translate([0,0,camera_height + adapter_arm_bump_size + camera_height_adjustment - length]) {
   translate([-clip_thickness + camera_gap,0,0]) clip_corner(length);
   translate([base_width - camera_gap,0,0]) clip_corner(length);
   }
@@ -188,9 +192,9 @@ module clip(length) {
 module left_clip() {
   translate ([0,camera_offset - clip_thickness,base_height]) {
     difference() {
-      clip(retaining_clip_depth);
+      clip(adapter_arm_bump_size);
       translate ([x_midpoint - left_clip_opening_width / 2,-clip_thickness,2])
-        cube([left_clip_opening_width,retaining_clip_depth + clip_thickness * 2,camera_height+retaining_clip_depth*2]);
+        cube([left_clip_opening_width,adapter_arm_bump_size + clip_thickness * 2,camera_height+adapter_arm_bump_size*2]);
     }
   }
 }
@@ -198,9 +202,9 @@ module left_clip() {
 module right_clip() {
   translate ([0,camera_length + camera_offset + clip_thickness,base_height]) {
     mirror ([0,1,0]) difference() {
-      clip(retaining_clip_depth);
+      clip(adapter_arm_bump_size);
       translate ([x_midpoint - right_clip_opening_width / 2,-clip_thickness,2])
-        cube([right_clip_opening_width,retaining_clip_depth + clip_thickness * 2,camera_height+retaining_clip_depth*2]);
+        cube([right_clip_opening_width,adapter_arm_bump_size + clip_thickness * 2,camera_height+adapter_arm_bump_size*2]);
     }
   }
 }
@@ -277,7 +281,7 @@ module retaining_clip() {
         cube([bracket_width, bracket_thickness, bracket_depth + bracket_thickness - bracket_radius]);
         cube([1, bracket_thickness, bracket_depth + bracket_thickness]);
         translate([bracket_width - bracket_radius,0,bracket_depth + bracket_thickness - bracket_radius])
-          mirror ([0,-1,1]) cylinder(r = bracket_radius, h = bracket_thickness, $fn=16);
+          mirror ([0,-1,1]) cylinder(r = bracket_radius, h = bracket_thickness);
       }    
       translate([0, bracket_inside_height + bracket_thickness, 0]) 
         cube([bracket_width, bracket_thickness, bracket_depth + bracket_thickness]);
@@ -290,9 +294,9 @@ module retaining_clip() {
     translate ([bracket_width - 3.6,0,bracket_depth + bracket_thickness - 2.8])
       mirror ([0,-1,1]) {
         translate([0,0,-bracket_thickness/2])
-          cylinder(d = 4, h = bracket_thickness, $fn=16);
+          cylinder(d = 4, h = bracket_thickness);
         translate([0,0,bracket_thickness / 2])
-          cylinder(d = 2, h = bracket_thickness, $fn=16);
+          cylinder(d = 2, h = bracket_thickness);
     }
   }
 }
@@ -306,7 +310,6 @@ module back_weight() {
   width = 34;
   weight_thickness = 100;
   
-  rotate([90,0,0])
   intersection() {
     difference() {
       union() {
@@ -386,8 +389,8 @@ module side_weight() {
         
         translate([bracket_length - screw_head_diameter / 2- 1,bracket_width / 2 - 1, 0]){ 
           
-          cylinder(d = screw_head_diameter, h = screw_head_height, $fn = 16);
-          cylinder(d = screw_thread_diameter, h = bracket_height, $fn = 16);
+          cylinder(d = screw_head_diameter, h = screw_head_height);
+          cylinder(d = screw_thread_diameter, h = bracket_height);
         }
       }
       translate([-side_weight_length, 0, 0])
