@@ -10,7 +10,7 @@ The adapter is pretty self-explanatory. You push the camera into the front of th
 
 The retaining clip is designed to be installed in place of the green clip that comes pre-installed on the gimbal. Just unscrew the single screw that holds the green clip, install the printed retaining clip in the same place, and use the screw you just removed to secure the clip.
 
-The weights are intended to balance the camera in the gimbal. Depending on the weight of your camera, they may not be needed. However, if you do print them, be sure to use 100% infill, otherwise they will not be heavy enough to make much difference.
+The weights are intended to balance the camera in the gimbal. Depending on the weight of your camera, they may not be needed. However, if you do print them, be sure to use 100% infill, otherwise they will not be heavy enough to work. The back weight screws into the the gimbal with three M2x6mm screws. There are screw holes in the back of the gimbal that line up with the holes in the weight.
 
 ### Customization ###
 
@@ -32,7 +32,11 @@ Also, if you're going to use the weights, you'll need to adjust the size for you
 
 ### Printing ###
 
-All of the parts are designed to print without supports. I printed in ABS, but the design should work in PLA. If you use PLA, you may need to be careful with the clips as they may be fragile. Also, given that the clips are fairly thin anyway, I'd your print is going to need good layer bonding / adhesion. I printed my ABS at 240C to ensure good adhesion.
+All of the parts are designed to print without supports. The design will work in ABS or PLA. However, as PLA is a little "stiffer" than ABS, you may want to reduce the size of the bump" on the end of the retaining clips, otherwise it may be hard to insert and remove your camera.
+
+It's also important to use a wall thickness that insures that the clips are solid and not hollow, as otherwise they will be too fragile. The clips are 3.2mm thick at the bottom so a 1.6mm wall thickness is good to use. (and works well with the commonly used 0.4mm nozzle size).
+
+Also, given that orientation of the layers in the clips, your print is going to need good layer bonding / adhesion. Higher temperatures help with that - I printed my ABS at 240C, and PLA at 210C.
 
 **Note:** Make sure to print the weights with 100% infill, otherwise they'll be too light weight to work properly.
 

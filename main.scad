@@ -23,8 +23,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Select the part you would like to display
 part = "adapter"; // [adapter:Adapter,retaining_clip:Retaining clip,back_weight:Back Weight,side_weight:Side Weight]
 
-part = "back_weight";
-
 /********************
  * MAIN PARAMETERS *
  ********************/
@@ -101,8 +99,8 @@ plug_offset = 55.5 - (plug_thickness / 2);
 // cutout for right side wall of "gimbal bracket"
 side_wall_length = 31;
 side_wall_height = 6.4;
-side_wall_width = 2.4;
-side_wall_offset = 59.8;
+side_wall_width = 3;
+side_wall_offset = 59.4;
 
 // height of hook on bottom left of "gimbal bracket"
 hook_width = 17.6;
@@ -139,9 +137,9 @@ cube([bottom_lip_width, base_length, bottom_lip_height]);
 module side_wall_cutout() {
    translate ([0, side_wall_offset, 0]) {
       cutout_base_height = side_wall_height - (side_wall_width / 2);
-      cube([side_wall_length, side_wall_width, cutout_base_height ]);
-        translate([0,0,cutout_base_height ])
-        prism (side_wall_length, side_wall_width, side_wall_width / 2);
+      cube([side_wall_length, side_wall_width, cutout_base_height + 0.01]);
+        translate([0,0,cutout_base_height])
+        prism (side_wall_length, side_wall_width, side_wall_width / 2- 0.01);
     }
 }
 
@@ -239,20 +237,11 @@ module weight_stud() {
 module adapter() {
 
   difference () {
-    union() {
     cube([base_width, main_length, base_height]);
- 
-//        translate([0,0,base_height]) {
-//    cube([(base_width - camera_width), main_length, 1]);
-//    translate([camera_width , 0,0])
-//      cube([(base_width - camera_width), main_length, 1]);
-//  }
-
-    }
     
     lip_cutout();
     
-    translate([base_width,0,0]) mirror([-1,0,0])lip_cutout();
+    translate([base_width,0,0]) mirror([-1,0,0]) lip_cutout();
     
     side_wall_cutout();
 
@@ -320,8 +309,8 @@ module back_weight() {
           cube([3, width, 3.4]);
         translate([33.6, 0, thickness])
           cube([3, width, 4]);
-        translate([54.8, 0, thickness])
-          cube([3, width, 4]); 
+        translate([54.8, 8, thickness])
+          cube([3, width - 8, 4]); 
         
        translate([36, 0, 0]) {
         translate([4.5, 18, -2])
